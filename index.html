@@ -166,6 +166,7 @@ body{
 .phase-card[data-phase="objecoes"] .phase-icon{background:rgba(212,92,92,.15);color:#d45c5c}
 .phase-card[data-phase="followup"] .phase-icon{background:rgba(120,160,200,.15);color:#78a0c8}
 .phase-card[data-phase="utils"] .phase-icon{background:rgba(242,240,237,.08);color:var(--text-muted)}
+.phase-card[data-phase="marcio"] .phase-icon{background:rgba(212,185,92,.15);color:#d4b95c}
 .phase-card[data-phase="funil"] .phase-icon{background:rgba(242,240,237,.1);color:var(--text)}
 .phase-card.full-width{grid-column:1/-1}
 
@@ -443,6 +444,13 @@ body{
       <div class="phase-label">Follow-up</div>
       <div class="phase-count">2h + 24h + 3 dias</div>
       <span class="utility-badge">Apoio</span>
+    </div>
+
+    <div class="phase-card full-width" data-phase="marcio" onclick="showPhase('marcio')">
+      <div class="phase-icon">&#9733;</div>
+      <div class="phase-label">Cliente M&aacute;rcio</div>
+      <div class="phase-count">Selecionadas para cortar com ele</div>
+      <span class="utility-badge">Sele&ccedil;&atilde;o</span>
     </div>
 
     <div class="phase-card" data-phase="utils" onclick="showPhase('utils')">
@@ -745,6 +753,106 @@ Se puder, deixa uma avalia&ccedil;&atilde;o pra gente no Google. Ajuda muito e l
   </div><!-- /objections-grid -->
 </div>
 
+<!-- PHASE: CLIENTE MARCIO -->
+<div class="phase-view" id="phase-marcio">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()">&#8592; Voltar</button>
+    <span class="phase-title">Cliente M&aacute;rcio</span>
+    <span class="step-indicator">Sele&ccedil;&atilde;o</span>
+  </div>
+
+  <div class="section-intro">Scripts para clientes selecionadas para cortar com o pr&oacute;prio M&aacute;rcio. Toque para expandir.</div>
+
+  <div class="note-box">
+    <strong>Quando usar:</strong> s&oacute; quando a equipe Avantis avisar que a cliente foi selecionada. Ela j&aacute; chega sabendo que o corte &eacute; com o M&aacute;rcio, pelo mesmo valor de R$95. Nunca oferecer por conta pr&oacute;pria.
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">1</span>
+      <h3>Primeiro contato (cliente selecionada)</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="m1">Oi, [nome]! Tudo bem? Aqui &eacute; a Tha&iacute;s, da W7M New Concept.
+A Bianca me passou seu contato: seu corte vai ser com o pr&oacute;prio M&aacute;rcio Guadagno, pelo mesmo valor de R$95.
+Vou ver a agenda dele pra voc&ecirc;. Qual dia e turno ficam melhores?</div>
+      <button class="copy-btn" onclick="copyScript('m1',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">2</span>
+      <h3>Oferecer hor&aacute;rios do M&aacute;rcio</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="m2">Tenho estes hor&aacute;rios com o M&aacute;rcio: [dia/hor&aacute;rio] e [dia/hor&aacute;rio]. Qual funciona melhor pra voc&ecirc;?</div>
+      <button class="copy-btn" onclick="copyScript('m2',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">3</span>
+      <h3>Confirma&ccedil;&atilde;o com o M&aacute;rcio</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="m3">Tudo certo, [nome]! Seu corte com o M&aacute;rcio est&aacute; confirmado:
+&#128197; [dia], &agrave;s [hor&aacute;rio]
+&#128205; W7M New Concept &mdash; Barra Business Center, Av. das Am&eacute;ricas, 3301, Bloco 2, loja 106, Barra da Tijuca (pr&oacute;ximo ao Village Mall)
+&#9986; Corte feminino com M&aacute;rcio Guadagno
+&#128176; R$95 (pagamento no dia)
+Te esperamos!</div>
+      <button class="copy-btn" onclick="copyScript('m3',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">4</span>
+      <h3>Lembrete (1 dia antes)</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="m4">Oi, [nome]! Passando pra lembrar do seu corte com o M&aacute;rcio amanh&atilde;, [dia] &agrave;s [hor&aacute;rio], na W7M New Concept. Tudo certo?</div>
+      <button class="copy-btn" onclick="copyScript('m4',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">5</span>
+      <h3>P&oacute;s-corte + manter com o M&aacute;rcio</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="m5">Oi, [nome]! Gostou do corte com o M&aacute;rcio? Ficou lindo!
+Se puder, deixa uma avalia&ccedil;&atilde;o pra gente no Google, leva menos de 1 minuto.
+E quando quiser manter o corte, &eacute; s&oacute; me chamar que eu vejo a agenda dele pra voc&ecirc;.</div>
+      <button class="copy-btn" onclick="copyScript('m5',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">?</span>
+      <h3>Se uma cliente n&atilde;o selecionada pedir o M&aacute;rcio</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="m6">Os hor&aacute;rios do M&aacute;rcio nessa a&ccedil;&atilde;o s&atilde;o limitados e j&aacute; foram preenchidos pela equipe. Mas o seu corte vai ser com a equipe dele, que ele treinou pessoalmente, com o mesmo padr&atilde;o. Quer que eu veja os hor&aacute;rios?</div>
+      <button class="copy-btn" onclick="copyScript('m6',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="note-box" style="margin-top:12px">
+    <strong>Manuten&ccedil;&atilde;o:</strong> depois da a&ccedil;&atilde;o, o corte com o M&aacute;rcio volta ao valor normal (R$178). Se a cliente perguntar, informe. N&atilde;o precisa citar antes.
+  </div>
+</div>
+
 <!-- PHASE: FOLLOW-UP -->
 <div class="phase-view" id="phase-followup">
   <div class="back-bar">
@@ -854,7 +962,7 @@ Campanha de setembro/2026</div>
         <h3>Regras de ouro do atendimento</h3>
         <div class="rule"><span class="rule-num">1</span><span><strong>Responder em menos de 5 minutos.</strong> Lead quente esfria r&aacute;pido.</span></div>
         <div class="rule"><span class="rule-num">2</span><span><strong>Usar o nome da pessoa sempre.</strong> Gera conex&atilde;o imediata.</span></div>
-        <div class="rule"><span class="rule-num">3</span><span><strong>O corte &eacute; pela equipe, n&atilde;o pelo M&aacute;rcio.</strong> Deixar claro desde o in&iacute;cio. Refor&ccedil;ar que s&atilde;o treinados por ele.</span></div>
+        <div class="rule"><span class="rule-num">3</span><span><strong>O corte &eacute; pela equipe, n&atilde;o pelo M&aacute;rcio.</strong> Deixar claro desde o in&iacute;cio. Refor&ccedil;ar que s&atilde;o treinados por ele. Exce&ccedil;&atilde;o: clientes selecionadas pela equipe Avantis (ver Cliente M&aacute;rcio).</span></div>
         <div class="rule"><span class="rule-num">4</span><span><strong>Pagamento no dia, no sal&atilde;o.</strong> Sem sinal, sem Pix antecipado. Simples assim.</span></div>
         <div class="rule"><span class="rule-num">5</span><span><strong>Sempre oferecer 2 op&ccedil;&otilde;es de hor&aacute;rio.</strong> Facilita a decis&atilde;o.</span></div>
         <div class="rule"><span class="rule-num">6</span><span><strong>N&atilde;o discutir pre&ccedil;o.</strong> Se achou caro, agrade&ccedil;a e encerre com eleg&acirc;ncia.</span></div>
