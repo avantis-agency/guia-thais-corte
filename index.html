@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#2b2b2b">
+<title>Guia de Atendimento &middot; W7M New Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#2b2b2b;
+  --bg-card:#333333;
+  --bg-script:#3a3a3a;
+  --border:#444444;
+  --border-light:#4a4a4a;
+  --text:#f2f0ed;
+  --text-muted:#a8a49e;
+  --text-light:#7a7672;
+  --accent:#f2f0ed;
+  --accent-dark:#d9d6d0;
+  --accent-light:#ffffff;
+  --success:#7ab882;
+  --warning:#d4b95c;
+  --danger:#d45c5c;
+  --white:#fff;
+  --pipeline-bg:#3a3a3a;
+  --pipeline-active:#f2f0ed;
+  --pipeline-done:#7ab882;
+  --decision-bg:#363330;
+  --decision-border:#4a4640;
+  --transition-speed:.35s;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:15px;line-height:1.65;
+  min-height:100vh;min-height:100dvh;
+  overflow-x:hidden;
+  padding-bottom:env(safe-area-inset-bottom,0);
+}
+
+/* transitions */
+@media(prefers-reduced-motion:no-preference){
+  .phase-view{animation:phaseSlideIn var(--transition-speed) cubic-bezier(.4,0,.2,1)}
+  @keyframes phaseSlideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+}
+@media(prefers-reduced-motion:reduce){
+  .phase-view{animation:none}
+  .script-card-body{transition:none!important}
+  .sc-arrow{transition:none!important}
+  .pipeline-step{transition:none!important}
+}
+
+/* header */
+.app-header{
+  text-align:center;padding:24px 20px 16px;
+  background:var(--bg-card);position:relative;
+}
+.app-header .brand{
+  font-family:'Playfair Display',sans-serif;font-size:10.5px;font-weight:400;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;
+}
+.app-header h1{font-family:'Playfair Display',sans-serif;font-size:22px;font-weight:700;color:var(--text)}
+.app-header .subtitle{font-size:13px;color:var(--text-muted);margin-top:4px;line-height:1.5}
+
+/* pipeline tracker */
+.pipeline-wrap{
+  background:var(--bg-card);border-bottom:1px solid var(--border);
+  padding:0 0 16px;overflow:hidden;
+}
+.pipeline-tracker{
+  display:flex;align-items:flex-start;justify-content:center;gap:0;
+  padding:8px 16px 0;max-width:640px;margin:0 auto;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.pipeline-tracker::-webkit-scrollbar{display:none}
+.pipeline-step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  flex:1;min-width:0;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  position:relative;padding:4px 2px;transition:opacity .2s ease;
+}
+.pipeline-step:active{opacity:.7}
+.pipeline-dot-row{display:flex;align-items:center;width:100%;position:relative}
+.pipeline-dot{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--pipeline-bg);border:2.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--text-muted);
+  flex-shrink:0;margin:0 auto;position:relative;z-index:2;transition:all .3s ease;
+}
+.pipeline-step.active .pipeline-dot{
+  background:var(--white);border-color:var(--white);
+  color:#2b2b2b;box-shadow:0 0 0 4px rgba(255,255,255,.15);
+}
+.pipeline-step.done .pipeline-dot{background:var(--pipeline-done);border-color:var(--pipeline-done);color:#1e1e1e}
+.pipeline-step:not(:last-child) .pipeline-dot-row::after{
+  content:'';position:absolute;top:50%;left:calc(50% + 16px);right:-2px;
+  height:2px;background:var(--border);z-index:1;transform:translateY(-50%);
+}
+.pipeline-step.done:not(:last-child) .pipeline-dot-row::after{background:var(--pipeline-done)}
+.pipeline-step.active:not(:last-child) .pipeline-dot-row::after{background:linear-gradient(to right,var(--white),var(--border))}
+.pipeline-label{
+  font-size:10px;font-weight:500;color:var(--text-muted);
+  text-align:center;line-height:1.25;letter-spacing:.01em;max-width:72px;word-wrap:break-word;
+}
+.pipeline-step.active .pipeline-label{color:var(--accent-dark);font-weight:600}
+.pipeline-step.done .pipeline-label{color:var(--success)}
+
+/* banner */
+.vagas-banner{
+  background:#1e1e1e;border-bottom:1px solid var(--border);
+  color:var(--text);padding:16px 20px;text-align:center;
+}
+.vagas-banner h2{font-family:'Playfair Display',sans-serif;font-size:15px;font-weight:600;margin-bottom:3px}
+.vagas-banner p{font-size:12.5px;opacity:.9;margin-bottom:8px}
+.vagas-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.18);border-radius:20px;padding:7px 16px;
+  font-size:14px;font-weight:700;
+}
+.vagas-pill .dot{width:8px;height:8px;border-radius:50%;background:#6bdf6b;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* phase grid (home) */
+#homeView{transition:opacity .2s ease}
+.phase-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  padding:16px;max-width:640px;margin:0 auto;
+}
+.phase-card{
+  background:var(--bg-card);border:1px solid var(--border-light);
+  border-radius:16px;padding:20px 16px;text-align:center;
+  cursor:pointer;transition:all .2s ease;-webkit-tap-highlight-color:transparent;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  min-height:120px;justify-content:center;position:relative;overflow:hidden;
+}
+.phase-card:active{transform:scale(.96);box-shadow:0 2px 16px rgba(0,0,0,.08)}
+.phase-card .phase-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+}
+.phase-card .phase-label{
+  font-family:'Playfair Display',sans-serif;font-size:13.5px;font-weight:600;
+  color:var(--text);letter-spacing:.01em;line-height:1.35;
+}
+.phase-card .phase-count{font-size:11px;color:var(--text-muted);font-weight:400}
+.phase-card .pipeline-badge{
+  position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;
+  background:var(--white);color:#2b2b2b;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.phase-card .utility-badge{
+  position:absolute;top:10px;right:10px;font-size:10px;color:var(--text-muted);
+  background:var(--bg-script);border-radius:8px;padding:2px 6px;font-weight:500;
+}
+.phase-card[data-phase="primeiro"] .phase-icon{background:rgba(122,184,130,.15);color:#7ab882}
+.phase-card[data-phase="valor"] .phase-icon{background:rgba(212,185,92,.15);color:#d4b95c}
+.phase-card[data-phase="agendamento"] .phase-icon{background:rgba(242,240,237,.1);color:var(--text)}
+.phase-card[data-phase="pos"] .phase-icon{background:rgba(180,140,200,.15);color:#b48cc8}
+.phase-card[data-phase="objecoes"] .phase-icon{background:rgba(212,92,92,.15);color:#d45c5c}
+.phase-card[data-phase="followup"] .phase-icon{background:rgba(120,160,200,.15);color:#78a0c8}
+.phase-card[data-phase="utils"] .phase-icon{background:rgba(242,240,237,.08);color:var(--text-muted)}
+.phase-card[data-phase="funil"] .phase-icon{background:rgba(242,240,237,.1);color:var(--text)}
+.phase-card.full-width{grid-column:1/-1}
+
+/* phase view (detail) */
+.phase-view{display:none;max-width:640px;margin:0 auto;padding:0 16px 120px}
+.phase-view.active{display:block}
+
+/* back bar */
+.back-bar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(43,43,43,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  padding:12px 0;margin:0 -16px;padding-left:16px;padding-right:16px;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.back-btn{
+  display:flex;align-items:center;gap:6px;
+  background:none;border:1px solid var(--border);border-radius:10px;padding:10px 14px;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:var(--accent);
+  cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s ease;min-height:44px;
+}
+.back-btn:active{background:var(--bg-script);transform:scale(.97)}
+.back-bar .phase-title{font-family:'Playfair Display',sans-serif;font-size:16px;font-weight:600;color:var(--text);flex:1}
+.back-bar .step-indicator{
+  font-size:12px;color:var(--text-muted);font-weight:500;
+  background:var(--bg-script);border-radius:8px;padding:4px 10px;white-space:nowrap;
+}
+
+/* script cards */
+.script-card{
+  background:var(--bg-card);border:1px solid var(--border-light);
+  border-radius:14px;margin-top:12px;overflow:hidden;
+}
+.script-card-header{
+  display:flex;align-items:center;gap:10px;padding:16px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;min-height:54px;
+}
+.script-card-header .sc-num{
+  width:28px;height:28px;border-radius:50%;background:var(--white);color:#2b2b2b;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;
+}
+.script-card-header h3{font-family:'Playfair Display',serif;font-size:16px;font-weight:500;color:var(--text);flex:1}
+.script-card-header .sc-arrow{
+  font-size:13px;color:var(--text-light);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);padding:4px;
+}
+.script-card.open .sc-arrow{transform:rotate(180deg);color:var(--accent)}
+.script-card-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.script-card.open .script-card-body{max-height:5000px;transition:max-height .6s cubic-bezier(.4,0,.2,1)}
+.script-card-content{padding:0 16px 18px}
+
+/* script blocks */
+.script-block{
+  background:var(--bg-script);border:1px solid var(--border);
+  border-radius:12px;padding:16px;margin-bottom:8px;
+  white-space:pre-wrap;font-size:15px;line-height:1.75;color:var(--text);
+}
+.script-label{
+  font-family:'Playfair Display',sans-serif;font-size:12px;font-weight:600;
+  color:var(--accent);letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:8px;margin-top:18px;
+}
+.script-label:first-child{margin-top:0}
+
+/* copy button */
+.copy-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;min-height:50px;margin-top:8px;margin-bottom:4px;
+  background:var(--white);color:#2b2b2b;border:none;
+  border-radius:12px;font-size:13.5px;font-weight:600;
+  font-family:'Inter',sans-serif;cursor:pointer;
+  transition:all .2s ease;letter-spacing:.04em;text-transform:uppercase;
+  -webkit-tap-highlight-color:transparent;
+}
+.copy-btn:active{background:var(--accent-dark);color:#2b2b2b;transform:scale(.96)}
+.copy-btn.copied{background:var(--success);color:var(--white);transform:scale(1.02)}
+
+/* guide / note / objection boxes */
+.guide-box{
+  background:var(--bg-script);border:1px solid var(--border);
+  border-radius:12px;padding:14px;margin-top:12px;font-size:14px;line-height:1.7;
+}
+.guide-box .item{margin-bottom:8px}.guide-box .item:last-child{margin-bottom:0}
+.note-box{
+  background:rgba(212,185,92,.08);border:1px solid rgba(212,185,92,.2);
+  border-radius:12px;padding:14px;margin-top:12px;font-size:14px;line-height:1.65;
+}
+.note-box strong{color:var(--warning)}
+.objection-card{
+  background:var(--bg-script);border:1px solid var(--border);
+  border-radius:12px;padding:14px;margin-bottom:12px;
+}
+.objection-card .objection-q{
+  font-size:14px;font-weight:600;color:var(--danger);margin-bottom:10px;
+  padding-bottom:10px;border-bottom:1px solid var(--border-light);
+}
+.objection-card .objection-a{font-size:15px;line-height:1.65;color:var(--text)}
+
+/* decision cards */
+.decision-section{margin-top:24px;padding-top:20px;border-top:2px dashed var(--border)}
+.decision-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.decision-header-icon{
+  width:32px;height:32px;border-radius:10px;
+  background:var(--decision-bg);border:1px solid var(--decision-border);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.decision-header h4{font-family:'Playfair Display',sans-serif;font-size:15px;font-weight:600;color:var(--text)}
+.decision-card{
+  background:var(--decision-bg);border:1px solid var(--decision-border);
+  border-radius:12px;padding:14px 16px;margin-bottom:8px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s ease;
+  display:flex;align-items:center;gap:12px;min-height:52px;
+}
+.decision-card:active{transform:scale(.98);box-shadow:0 2px 12px rgba(154,123,79,.12)}
+.decision-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.decision-dot.hot{background:#4a7a52}
+.decision-dot.warm{background:var(--warning)}
+.decision-dot.cold{background:var(--danger)}
+.decision-dot.dead{background:var(--text-light)}
+.decision-dot.accept{background:var(--success)}
+.decision-dot.think{background:var(--warning)}
+.decision-dot.expensive{background:var(--danger)}
+.decision-dot.silent{background:var(--text-light)}
+.decision-dot.confirmed{background:var(--success)}
+.decision-dot.pending{background:var(--warning)}
+.decision-text{flex:1;font-size:14px;line-height:1.5;color:var(--text)}
+.decision-text strong{color:var(--accent-dark)}
+.decision-arrow{font-size:14px;color:var(--accent-light);flex-shrink:0}
+
+/* next step button */
+.next-step-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;min-height:56px;margin-top:20px;
+  background:var(--white);
+  color:#2b2b2b;border:none;border-radius:14px;
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:600;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:all .2s ease;letter-spacing:.02em;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
+}
+.next-step-btn:active{transform:scale(.97);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+
+/* rules */
+.rules-card{
+  background:var(--bg-script);border:1.5px solid var(--border-light);
+  border-radius:14px;padding:20px 16px;margin-top:8px;
+}
+.rules-card h3{
+  font-family:'Playfair Display',sans-serif;font-size:17px;font-weight:500;
+  color:var(--accent-dark);margin-bottom:16px;text-align:center;
+}
+.rule{margin-bottom:14px;font-size:14px;line-height:1.65;display:flex;align-items:flex-start;gap:10px}
+.rule:last-child{margin-bottom:0}
+.rule strong{color:var(--accent-dark)}
+.rule-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:24px;height:24px;border-radius:50%;
+  background:var(--white);color:#2b2b2b;
+  font-size:11px;font-weight:600;flex-shrink:0;margin-top:2px;
+}
+
+/* funnel visual */
+.funnel-visual{margin:12px 0;padding:14px;background:var(--bg-script);border-radius:14px;border:1px solid var(--border)}
+.funnel-step-mini{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-light)}
+.funnel-step-mini:last-child{border-bottom:none}
+.funnel-step-mini .step-num{
+  width:24px;height:24px;border-radius:50%;background:var(--white);color:#2b2b2b;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;
+}
+.funnel-step-mini .step-text{font-size:13.5px;flex:1;line-height:1.5}
+.funnel-step-mini .step-text strong{color:var(--accent-dark)}
+
+/* section intro */
+.section-intro{padding:16px 0 4px;font-size:14px;color:var(--text-muted);line-height:1.6}
+
+/* iPad 768px+ */
+@media(min-width:768px){
+  .pipeline-tracker{max-width:720px;padding:10px 24px 0}
+  .pipeline-dot{width:34px;height:34px;font-size:13px}
+  .pipeline-label{font-size:11px;max-width:90px}
+  .phase-grid{grid-template-columns:1fr 1fr 1fr;gap:16px;padding:24px;max-width:720px}
+  .phase-card{min-height:140px;padding:24px 20px}
+  .phase-card .phase-icon{width:50px;height:50px;font-size:22px}
+  .phase-card .phase-label{font-size:14.5px}
+  .phase-view{max-width:720px;padding:0 24px 120px}
+  .back-bar{margin:0 -24px;padding-left:24px;padding-right:24px}
+  .script-block{font-size:15.5px}
+  .vagas-banner h2{font-size:17px}
+  .app-header h1{font-size:24px}
+  .objections-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .decision-card{padding:16px 18px}
+}
+/* Desktop 1024px+ */
+@media(min-width:1024px){
+  .pipeline-tracker{max-width:800px}
+  .phase-grid{max-width:800px}
+  .phase-view{max-width:800px}
+  .pipeline-dot{width:36px;height:36px;font-size:14px}
+  .pipeline-label{font-size:12px;max-width:100px}
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">W7M New Concept &middot; Corte Feminino</div>
+  <h1>Guia de Atendimento</h1>
+  <p class="subtitle">Siga o fluxo ou toque na fase que precisa.</p>
+</header>
+
+<!-- PIPELINE TRACKER -->
+<div class="pipeline-wrap" id="pipelineWrap">
+  <div class="pipeline-tracker" id="pipelineTracker">
+    <div class="pipeline-step" data-pipeline="1" onclick="navigatePipeline('primeiro')">
+      <div class="pipeline-dot-row"><div class="pipeline-dot">1</div></div>
+      <span class="pipeline-label">Primeiro Contato</span>
+    </div>
+    <div class="pipeline-step" data-pipeline="2" onclick="navigatePipeline('agendamento')">
+      <div class="pipeline-dot-row"><div class="pipeline-dot">2</div></div>
+      <span class="pipeline-label">Agendamento</span>
+    </div>
+    <div class="pipeline-step" data-pipeline="3" onclick="navigatePipeline('pos')">
+      <div class="pipeline-dot-row"><div class="pipeline-dot">3</div></div>
+      <span class="pipeline-label">P&oacute;s-agendamento</span>
+    </div>
+  </div>
+</div>
+
+<div class="vagas-banner">
+  <h2>A&ccedil;&atilde;o: Corte Feminino &middot; Barra da Tijuca</h2>
+  <p>De R$178 por R$95 &middot; Equipe M&aacute;rcio Guadagno</p>
+  <div class="vagas-pill"><span class="dot"></span>Campanha ativa</div>
+</div>
+
+<!-- HOME: PHASE GRID -->
+<div id="homeView">
+  <div class="phase-grid">
+
+    <div class="phase-card full-width" data-phase="funil" onclick="showPhase('funil')">
+      <div class="phase-icon">&#9783;</div>
+      <div class="phase-label">Funil Completo</div>
+      <div class="phase-count">Vis&atilde;o geral da a&ccedil;&atilde;o</div>
+    </div>
+
+    <div class="phase-card" data-phase="primeiro" onclick="showPhase('primeiro')">
+      <div class="phase-icon">&#9993;</div>
+      <div class="phase-label">Primeiro Contato</div>
+      <div class="phase-count">Acolher + apresentar</div>
+      <span class="pipeline-badge">1</span>
+    </div>
+
+    <div class="phase-card" data-phase="agendamento" onclick="showPhase('agendamento')">
+      <div class="phase-icon">&#10003;</div>
+      <div class="phase-label">Agendamento</div>
+      <div class="phase-count">Hor&aacute;rio + confirmar</div>
+      <span class="pipeline-badge">2</span>
+    </div>
+
+    <div class="phase-card" data-phase="pos" onclick="showPhase('pos')">
+      <div class="phase-icon">&#9829;</div>
+      <div class="phase-label">P&oacute;s-agendamento</div>
+      <div class="phase-count">Lembrete + remarcar</div>
+      <span class="pipeline-badge">3</span>
+    </div>
+
+    <div class="phase-card" data-phase="objecoes" onclick="showPhase('objecoes')">
+      <div class="phase-icon">&#10007;</div>
+      <div class="phase-label">Obje&ccedil;&otilde;es</div>
+      <div class="phase-count">4 respostas prontas</div>
+      <span class="utility-badge">Apoio</span>
+    </div>
+
+    <div class="phase-card" data-phase="followup" onclick="showPhase('followup')">
+      <div class="phase-icon">&#8635;</div>
+      <div class="phase-label">Follow-up</div>
+      <div class="phase-count">2h + 24h + 3 dias</div>
+      <span class="utility-badge">Apoio</span>
+    </div>
+
+    <div class="phase-card" data-phase="utils" onclick="showPhase('utils')">
+      <div class="phase-icon">&#9881;</div>
+      <div class="phase-label">Utilidades</div>
+      <div class="phase-count">Autom&aacute;tica + regras</div>
+      <span class="utility-badge">Apoio</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHASE: FUNIL -->
+<div class="phase-view" id="phase-funil">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()">&#8592; Voltar</button>
+    <span class="phase-title">Funil Completo</span>
+  </div>
+
+  <div class="section-intro">A jornada da lead do an&uacute;ncio at&eacute; o corte no sal&atilde;o.</div>
+
+  <div class="funnel-visual" style="margin-top:12px">
+    <div class="funnel-step-mini"><span class="step-num">1</span><span class="step-text"><strong>An&uacute;ncio Meta Ads</strong> &middot; criativo gera desejo, CTA leva pro Instagram</span></div>
+    <div class="funnel-step-mini"><span class="step-num">2</span><span class="step-text"><strong>ManyChat no Instagram</strong> &middot; automa&ccedil;&atilde;o qualifica e encaminha pra Tha&iacute;s</span></div>
+    <div class="funnel-step-mini"><span class="step-num">3</span><span class="step-text"><strong>Tha&iacute;s acolhe + apresenta</strong> &middot; primeiro contato, explica o corte e o valor</span></div>
+    <div class="funnel-step-mini"><span class="step-num">4</span><span class="step-text"><strong>Agendamento</strong> &middot; marca hor&aacute;rio, pagamento integral no dia</span></div>
+    <div class="funnel-step-mini"><span class="step-num">5</span><span class="step-text"><strong>Corte no sal&atilde;o</strong> &middot; equipe do M&aacute;rcio realiza o corte</span></div>
+    <div class="funnel-step-mini"><span class="step-num">6</span><span class="step-text"><strong>P&oacute;s-agendamento</strong> &middot; lembrete + suporte + remarcar se preciso</span></div>
+  </div>
+
+  <div class="note-box" style="margin-top:12px">
+    <strong>Importante:</strong> O valor &eacute; R$95, pago no dia do corte. N&atilde;o tem sinal nem pagamento antecipado. A lead chega sabendo &ldquo;De R$178 por R$95&rdquo;. O corte &eacute; feito pela equipe do M&aacute;rcio Guadagno, n&atilde;o por ele diretamente. Endere&ccedil;o: W7M New Concept, Barra Business Center, Av. das Am&eacute;ricas, 3301, Bloco 2, loja 106 &mdash; Barra da Tijuca.
+  </div>
+
+  <button class="next-step-btn" onclick="showPhase('primeiro')">Iniciar atendimento &#8594; Primeiro Contato</button>
+</div>
+
+<!-- PHASE: PRIMEIRO CONTATO -->
+<div class="phase-view" id="phase-primeiro" data-pipeline-step="1">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()">&#8592; Voltar</button>
+    <span class="phase-title">Primeiro Contato</span>
+    <span class="step-indicator">Etapa 1 de 3</span>
+  </div>
+
+  <div class="script-card open">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">1</span>
+      <h3>Acolher + apresentar o corte</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="pc1">Oi, [nome]! Tudo bem? Aqui &eacute; a Tha&iacute;s, da W7M New Concept.
+
+Vi que voc&ecirc; se interessou pelo corte feminino. Que bom ter voc&ecirc; aqui!
+
+Posso te contar como funciona?</div>
+      <button class="copy-btn" onclick="copyScript('pc1',this)">Copiar</button>
+
+      <div class="note-box">
+        <strong>Tempo:</strong> Responder em menos de 5 minutos. Lead quente esfria r&aacute;pido.
+      </div>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">2</span>
+      <h3>Explicar o servi&ccedil;o + valor</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="pc2">O corte &eacute; feito pela equipe do M&aacute;rcio Guadagno, aqui na W7M New Concept na Barra da Tijuca.
+
+O valor normal &eacute; R$178. Estamos com uma condi&ccedil;&atilde;o especial por R$95.
+
+O pagamento &eacute; no dia, direto no sal&atilde;o. Quer agendar?</div>
+      <button class="copy-btn" onclick="copyScript('pc2',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <!-- DECISION CARDS -->
+  <div class="decision-section">
+    <div class="decision-header">
+      <div class="decision-header-icon">&#9735;</div>
+      <h4>Para onde ir agora?</h4>
+    </div>
+
+    <div class="decision-card" onclick="showPhase('agendamento')">
+      <span class="decision-dot hot"></span>
+      <span class="decision-text">Lead quer agendar &#8594; <strong>Agendamento</strong></span>
+      <span class="decision-arrow">&#8250;</span>
+    </div>
+    <div class="decision-card" onclick="showPhase('objecoes')">
+      <span class="decision-dot warm"></span>
+      <span class="decision-text">Lead hesitou / fez pergunta &#8594; <strong>Obje&ccedil;&otilde;es</strong></span>
+      <span class="decision-arrow">&#8250;</span>
+    </div>
+    <div class="decision-card" onclick="showPhase('followup')">
+      <span class="decision-dot silent"></span>
+      <span class="decision-text">Lead n&atilde;o respondeu &#8594; <strong>Follow-up</strong></span>
+      <span class="decision-arrow">&#8250;</span>
+    </div>
+  </div>
+
+  <button class="next-step-btn" onclick="showPhase('agendamento')">Pr&oacute;xima etapa &#8594; Agendamento</button>
+</div>
+
+<!-- PHASE: AGENDAMENTO -->
+<div class="phase-view" id="phase-agendamento" data-pipeline-step="2">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()">&#8592; Voltar</button>
+    <span class="phase-title">Agendamento</span>
+    <span class="step-indicator">Etapa 2 de 3</span>
+  </div>
+
+  <div class="script-card open">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">1</span>
+      <h3>Oferecer hor&aacute;rios</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="ag1">Perfeito! Vou reservar seu hor&aacute;rio.
+
+Temos disponibilidade em [dia/hor&aacute;rio] e [dia/hor&aacute;rio]. Qual funciona melhor pra voc&ecirc;?</div>
+      <button class="copy-btn" onclick="copyScript('ag1',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">2</span>
+      <h3>Confirma&ccedil;&atilde;o do agendamento</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="ag2">Tudo certo, [nome]! Agendamento confirmado:
+
+&#128197; [dia], &agrave;s [hor&aacute;rio]
+&#128205; W7M New Concept &mdash; Barra Business Center, Av. das Am&eacute;ricas, 3301, Bloco 2, loja 106, Barra da Tijuca
+&#9986; Corte feminino
+&#128176; R$95 (pagamento no dia)
+
+Te esperamos!</div>
+      <button class="copy-btn" onclick="copyScript('ag2',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">3</span>
+      <h3>Se perguntar quem vai cortar</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="ag3">O corte &eacute; feito pela equipe do M&aacute;rcio Guadagno, que trabalha junto com ele na W7M. S&atilde;o profissionais treinados por ele, com o mesmo padr&atilde;o de qualidade.</div>
+      <button class="copy-btn" onclick="copyScript('ag3',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <!-- DECISION CARDS -->
+  <div class="decision-section">
+    <div class="decision-header">
+      <div class="decision-header-icon">&#9735;</div>
+      <h4>Para onde ir agora?</h4>
+    </div>
+
+    <div class="decision-card" onclick="showPhase('pos')">
+      <span class="decision-dot confirmed"></span>
+      <span class="decision-text">Confirmou hor&aacute;rio &#8594; <strong>P&oacute;s-agendamento</strong></span>
+      <span class="decision-arrow">&#8250;</span>
+    </div>
+    <div class="decision-card" onclick="showPhase('objecoes')">
+      <span class="decision-dot warm"></span>
+      <span class="decision-text">Fez mais perguntas &#8594; <strong>Obje&ccedil;&otilde;es</strong></span>
+      <span class="decision-arrow">&#8250;</span>
+    </div>
+    <div class="decision-card" onclick="showPhase('followup')">
+      <span class="decision-dot pending"></span>
+      <span class="decision-text">Disse que vai ver e sumiu &#8594; <strong>Follow-up</strong></span>
+      <span class="decision-arrow">&#8250;</span>
+    </div>
+  </div>
+
+  <button class="next-step-btn" onclick="showPhase('pos')">Pr&oacute;xima etapa &#8594; P&oacute;s-agendamento</button>
+</div>
+
+<!-- PHASE: POS-AGENDAMENTO -->
+<div class="phase-view" id="phase-pos" data-pipeline-step="3">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()">&#8592; Voltar</button>
+    <span class="phase-title">P&oacute;s-agendamento</span>
+    <span class="step-indicator">Etapa 3 de 3</span>
+  </div>
+
+  <div class="script-card open">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">1</span>
+      <h3>Lembrete (1 dia antes)</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="pos1">Oi, [nome]! Passando pra lembrar do seu hor&aacute;rio amanh&atilde;, [dia] &agrave;s [hor&aacute;rio], na W7M New Concept na Barra da Tijuca. Tudo certo?</div>
+      <button class="copy-btn" onclick="copyScript('pos1',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">2</span>
+      <h3>Cancelamento / remarcar</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="pos2">Sem problema, [nome]. Consigo remarcar pra [dia/hor&aacute;rio]. Me avisa qual hor&aacute;rio fica melhor pra voc&ecirc;.</div>
+      <button class="copy-btn" onclick="copyScript('pos2',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">3</span>
+      <h3>P&oacute;s-corte (pedir avalia&ccedil;&atilde;o)</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="pos3">Oi, [nome]! Gostou do resultado? Ficou lindo!
+
+Se puder, deixa uma avalia&ccedil;&atilde;o pra gente no Google. Ajuda muito e leva menos de 1 minuto. Obrigada!</div>
+      <button class="copy-btn" onclick="copyScript('pos3',this)">Copiar</button>
+
+      <div class="note-box">
+        <strong>Dica:</strong> Pedir avalia&ccedil;&atilde;o no dia seguinte ao corte, quando a cliente j&aacute; viveu o resultado em casa.
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<!-- PHASE: OBJECOES -->
+<div class="phase-view" id="phase-objecoes">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()">&#8592; Voltar</button>
+    <span class="phase-title">Obje&ccedil;&otilde;es</span>
+    <span class="step-indicator">Apoio</span>
+  </div>
+
+  <div class="section-intro">Respostas prontas para as obje&ccedil;&otilde;es mais comuns. Toque para expandir.</div>
+
+  <div class="objections-grid">
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num" style="background:var(--danger)">?</span>
+      <h3>"N&atilde;o &eacute; o M&aacute;rcio que corta?"</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="obj1">O corte &eacute; feito pela equipe do M&aacute;rcio, que trabalha com ele no dia a dia na W7M. S&atilde;o profissionais que ele treinou pessoalmente. O padr&atilde;o de qualidade &eacute; o mesmo. Esse pre&ccedil;o especial de R$95 &eacute; justamente por ser com a equipe.</div>
+      <button class="copy-btn" onclick="copyScript('obj1',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num" style="background:var(--danger)">$</span>
+      <h3>"Vi mais barato" / "Achei caro"</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="obj2">Entendo, [nome]. O corte na W7M custa normalmente R$178. Essa condi&ccedil;&atilde;o de R$95 &eacute; uma a&ccedil;&atilde;o especial. A equipe do M&aacute;rcio trabalha com padr&atilde;o de sal&atilde;o premium. Se quiser, posso te mandar fotos de resultados pra voc&ecirc; ver.</div>
+      <button class="copy-btn" onclick="copyScript('obj2',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num" style="background:var(--danger)">&#8987;</span>
+      <h3>"Vou pensar"</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="obj3">Claro, [nome]! Fica &agrave; vontade. A condi&ccedil;&atilde;o de R$95 &eacute; por tempo limitado. Quando decidir, me chama que vejo os hor&aacute;rios dispon&iacute;veis.</div>
+      <button class="copy-btn" onclick="copyScript('obj3',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num" style="background:var(--danger)">&#128205;</span>
+      <h3>"Fica longe pra mim"</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="obj4">Entendo! A a&ccedil;&atilde;o tamb&eacute;m acontece na unidade de Ipanema, na Werner Coiffeur (Galeria Astoria, R. Visc. de Piraj&aacute;, 595). Se ficar mais perto pra voc&ecirc;, te passo o contato de l&aacute;.</div>
+      <button class="copy-btn" onclick="copyScript('obj4',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  </div><!-- /objections-grid -->
+</div>
+
+<!-- PHASE: FOLLOW-UP -->
+<div class="phase-view" id="phase-followup">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()">&#8592; Voltar</button>
+    <span class="phase-title">Follow-up</span>
+    <span class="step-indicator">Apoio</span>
+  </div>
+
+  <div class="section-intro">Sequ&ecirc;ncia de follow-ups para leads que n&atilde;o responderam. Toque para expandir.</div>
+
+  <div class="script-card open">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">1</span>
+      <h3>N&atilde;o respondeu (2h depois)</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="fu1">[nome], vi que voc&ecirc; se interessou pelo corte feminino. Ficou com alguma d&uacute;vida? Estou aqui pra te ajudar!</div>
+      <button class="copy-btn" onclick="copyScript('fu1',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">2</span>
+      <h3>N&atilde;o respondeu (24h)</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="fu2">Oi, [nome]! Ainda temos hor&aacute;rios dispon&iacute;veis pro corte feminino por R$95. Se tiver interesse, me avisa que te passo as op&ccedil;&otilde;es.</div>
+      <button class="copy-btn" onclick="copyScript('fu2',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">3</span>
+      <h3>Follow-up final (3 dias)</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="fu3">Oi, [nome]! Passando pela &uacute;ltima vez sobre o corte feminino por R$95 na W7M. Se decidir, &eacute; s&oacute; me chamar. Foi um prazer falar com voc&ecirc;!</div>
+      <button class="copy-btn" onclick="copyScript('fu3',this)">Copiar</button>
+    </div></div>
+  </div>
+</div>
+
+<!-- PHASE: UTILIDADES -->
+<div class="phase-view" id="phase-utils">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goHome()">&#8592; Voltar</button>
+    <span class="phase-title">Utilidades</span>
+    <span class="step-indicator">Apoio</span>
+  </div>
+
+  <div class="script-card open">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">1</span>
+      <h3>Mensagem autom&aacute;tica</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="ut1">Oi! Que bom que voc&ecirc; chegou at&eacute; aqui. Recebi sua mensagem e vou te responder em poucos minutos. Obrigada pela paci&ecirc;ncia!</div>
+      <button class="copy-btn" onclick="copyScript('ut1',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">2</span>
+      <h3>Endere&ccedil;o completo (copiar e colar)</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="ut2">W7M New Concept
+Barra Business Center
+Av. das Am&eacute;ricas, 3301 &mdash; Bloco 2, loja 106
+Barra da Tijuca, Rio de Janeiro &mdash; RJ, 22631-003</div>
+      <button class="copy-btn" onclick="copyScript('ut2',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num">3</span>
+      <h3>Resumo r&aacute;pido da a&ccedil;&atilde;o (cola interna)</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="script-block" id="ut3">Corte feminino &mdash; Equipe M&aacute;rcio Guadagno
+De R$178 por R$95
+Pagamento no dia, no sal&atilde;o
+W7M New Concept &mdash; Barra da Tijuca
+Campanha de setembro/2026</div>
+      <button class="copy-btn" onclick="copyScript('ut3',this)">Copiar</button>
+    </div></div>
+  </div>
+
+  <div class="script-card">
+    <div class="script-card-header" onclick="toggleCard(this)">
+      <span class="sc-num" style="background:var(--accent-dark)">&#9733;</span>
+      <h3>Regras de ouro</h3>
+      <span class="sc-arrow">&#9662;</span>
+    </div>
+    <div class="script-card-body"><div class="script-card-content">
+      <div class="rules-card">
+        <h3>Regras de ouro do atendimento</h3>
+        <div class="rule"><span class="rule-num">1</span><span><strong>Responder em menos de 5 minutos.</strong> Lead quente esfria r&aacute;pido.</span></div>
+        <div class="rule"><span class="rule-num">2</span><span><strong>Usar o nome da pessoa sempre.</strong> Gera conex&atilde;o imediata.</span></div>
+        <div class="rule"><span class="rule-num">3</span><span><strong>O corte &eacute; pela equipe, n&atilde;o pelo M&aacute;rcio.</strong> Deixar claro desde o in&iacute;cio. Refor&ccedil;ar que s&atilde;o treinados por ele.</span></div>
+        <div class="rule"><span class="rule-num">4</span><span><strong>Pagamento no dia, no sal&atilde;o.</strong> Sem sinal, sem Pix antecipado. Simples assim.</span></div>
+        <div class="rule"><span class="rule-num">5</span><span><strong>Sempre oferecer 2 op&ccedil;&otilde;es de hor&aacute;rio.</strong> Facilita a decis&atilde;o.</span></div>
+        <div class="rule"><span class="rule-num">6</span><span><strong>N&atilde;o discutir pre&ccedil;o.</strong> Se achou caro, agrade&ccedil;a e encerre com eleg&acirc;ncia.</span></div>
+        <div class="rule"><span class="rule-num">7</span><span><strong>A ordem importa.</strong> Acolher &#8594; Explicar &#8594; Valor &#8594; Agendar. N&atilde;o pule etapas.</span></div>
+        <div class="rule"><span class="rule-num">8</span><span><strong>Lembrete no dia anterior.</strong> Reduz no-show e mostra cuidado.</span></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<script>
+/* Pipeline state */
+var pipelineMap = {
+  primeiro: 1,
+  agendamento: 2,
+  pos: 3
+};
+var currentPhase = null;
+
+function updatePipeline(phaseId) {
+  var stepNum = pipelineMap[phaseId] || 0;
+  var steps = document.querySelectorAll('.pipeline-step');
+  steps.forEach(function(s) {
+    var n = parseInt(s.getAttribute('data-pipeline'));
+    s.classList.remove('active', 'done');
+    if (stepNum > 0) {
+      if (n < stepNum) s.classList.add('done');
+      else if (n === stepNum) s.classList.add('active');
+    }
+  });
+}
+
+function navigatePipeline(phaseId) {
+  showPhase(phaseId);
+}
+
+function showPhase(id) {
+  currentPhase = id;
+  document.getElementById('homeView').style.display = 'none';
+  document.querySelectorAll('.phase-view').forEach(function(v) {
+    v.classList.remove('active');
+  });
+  var target = document.getElementById('phase-' + id);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  updatePipeline(id);
+  document.getElementById('pipelineWrap').style.display = '';
+}
+
+function goHome() {
+  currentPhase = null;
+  document.querySelectorAll('.phase-view').forEach(function(v) {
+    v.classList.remove('active');
+  });
+  document.getElementById('homeView').style.display = '';
+  document.querySelectorAll('.pipeline-step').forEach(function(s) {
+    s.classList.remove('active', 'done');
+  });
+  document.getElementById('pipelineWrap').style.display = '';
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function toggleCard(header) {
+  var card = header.parentElement;
+  if (card.classList.contains('open')) {
+    card.classList.remove('open');
+  } else {
+    card.classList.add('open');
+  }
+}
+
+function copyScript(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showCopied(btn);
+    }).catch(function() {
+      fallbackCopy(text, btn);
+    });
+  } else {
+    fallbackCopy(text, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showCopied(btn);
+  } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+function showCopied(btn) {
+  btn.textContent = 'Copiado! \u2713';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.textContent = 'Copiar';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+</script>
+</body>
+</html>
